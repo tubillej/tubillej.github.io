@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Student Lookup (hashed)</title>
+<style>
+  :root{font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;}
+  body{display:flex;align-items:center;justify-content:center;height:100vh;margin:0;background:#f7fafc;color:#0f172a}
+  .card{width:min(760px,95vw);background:white;padding:28px;border-radius:12px;box-shadow:0 6px 30px rgba(2,6,23,0.08)}
+  .search-row{display:flex;gap:8px}
+  input[type="search"]{flex:1;padding:12px 14px;border-radius:8px;border:1px solid #e6e9ef;font-size:16px}
+  button{padding:10px 14px;border-radius:8px;border:0;background:#0ea5a4;color:white;font-weight:600;cursor:pointer}
+  table{width:100%;border-collapse:collapse;margin-top:18px}
+  th,td{text-align:left;padding:10px;border-bottom:1px solid #eef2f7}
+  .muted{color:#64748b;font-size:13px}
+  .hidden{display:none}
+  .notfound{margin-top:12px;color:#ef4444;font-weight:600}
+</style>
+</head>
+<body>
+<div class="card" role="main">
+  <div class="muted">Search by Student ID (the data is stored hashed for privacy).</div>
+  <div class="search-row" style="margin-top:12px">
+    <input id="q" type="search" placeholder="Enter 8-digit Student ID and press Enter" aria-label="Student ID">
+    <button id="btn">Search</button>
+  </div>
+  <div id="resultArea" class="hidden" aria-live="polite">
+    <table id="resultTable" role="table">
+      <thead><tr><th>Student (masked)</th><th>GPA</th><th>Section</th></tr></thead>
+      <tbody id="resultBody"></tbody>
+    </table>
+  </div>
+  <div id="notfound" class="notfound hidden">No matching student ID found.</div>
+  <p class="muted" style="margin-top:12px;font-size:13px">Notes: The page stores only SHA-256 hashes and masked IDs (last 4 digits). The lookup hashes the input in the browser and compares against the stored hashes—original IDs are not exposed in the file.</p>
+</div>
+
+<script>
+const dataset = [{"hash": "3bd9600cf9cbaf99d4b3a207fe9f93d090158de98fab5ff4b01423fa593a4d18", "masked": "****4641", "gpa": "2.5", "section": "A55"}, {"hash": "6a13f24af8df60735315351d2599904c166566957090bf7816443910a9dedc5c", "masked": "****3536", "gpa": "3.5", "section": "A55"}, {"hash": "908442ac3d7983aeac94e0188ca4a680d7bdfc4b0059699574e16f5921217b83", "masked": "****3416", "gpa": "3", "section": "A55"}, {"hash": "ce37f1c61a5a2bb1b9682bdb8d9f27c8d3378f7d13afe79d35367c7081507643", "masked": "****6997", "gpa": "3.5", "section": "A55"}, {"hash": "629745d25a5b7840cd891e85154e34160715f4e20b42912ed5aba19ba56c80c4", "masked": "****1168", "gpa": "4", "section": "A55"}, {"hash": "f8e5a5e2fcd5908423a3e80c5a3be96d812e295e5cf97cb67b5eabb349704c8a", "masked": "****6547", "gpa": "2.5", "section": "A55"}, {"hash": "8f3d8f6bc211d03a570fb8f54e66ae39926a93b3ce2a1f025712d38cc7997ab1", "masked": "****9120", "gpa": "3.5", "section": "A55"}, {"hash": "9d0507aa7f9ab890a7f28fcaea793a4371c5cfd2ab19312db83efba80cae5b50", "masked": "****2127", "gpa": "3", "section": "A55"}, {"hash": "bdb9d60e5b4706bd44b94288624fdba7e92aab2466e377a9161daa4c07abaaea", "masked": "****2674", "gpa": "3", "section": "A55"}, {"hash": "48e19e50860fb8b33033cbb5c0653800960eb4875fbb6d17e972da10ec106444", "masked": "****4560", "gpa": "3", "section": "A55"}, {"hash": "ee8e31f42b5779adbb1952fa8a75ccc658648734fc6583fd28b60dab3c31bb76", "masked": "****1541", "gpa": "3.5", "section": "A55"}, {"hash": "44d048fd1b038b6f50809e721174e13f3b04ab2dca2ae9deb2ddf341698f94ad", "masked": "****5435", "gpa": "4", "section": "A55"}, {"hash": "00474661da0006fde3c6444cbb7a4486fbb3aebb331c8cbe9ef3db02d6b37ebf", "masked": "****7829", "gpa": "3.5", "section": "A55"}, {"hash": "e89ceb73e1df082998b702eafd13011b7b2e862476a1d9cf834186fe008117e5", "masked": "****6414", "gpa": "3.5", "section": "A55"}, {"hash": "69f8b2b807dee3745139f9343aea5577c96e8b5408c8ec48fa8c72da2f69db36", "masked": "****8485", "gpa": "2.5", "section": "A55"}, {"hash": "88434f7bc8d7fa170ee9dc84caa4368fa68a82b873188b974e8972f33a9e4b4f", "masked": "****7414", "gpa": "2.5", "section": "A55"}, {"hash": "74ee621d94e446f49fef057f9a99ede7e1a16563476596ef3fa567a6216fd96f", "masked": "****2238", "gpa": "3", "section": "A55"}, {"hash": "7f20ab36155efb6d1594359ce8cef1f4e9461989ada8eb08b2d8616c6775301f", "masked": "****5273", "gpa": "3.5", "section": "A55"}, {"hash": "3a8cf08cf8b4416cab3b99aa2343089da0b9b3ea7ecd7d60be94d0fa3b82d453", "masked": "****7950", "gpa": "2.5", "section": "A55"}, {"hash": "cc90728e59d1f022acf080d2565999c1326a0984318b2d05b01725ca0fb23140", "masked": "****1621", "gpa": "3", "section": "A55"}, {"hash": "07de9f2f933d50fa534cd2b07c39ec85718c2a45ed1fa0dd3c7a3659130d2ae0", "masked": "****1176", "gpa": "4", "section": "A55"}, {"hash": "b09e8f1b6416e40ba0aa77d2207fd3d3cc0c0920a87079023b3224458730d7f9", "masked": "****0323", "gpa": "3", "section": "A55"}, {"hash": "8280c7c279956b746e6fe6ba192d200891a2988bde8322f1596a8aa855be1097", "masked": "****2245", "gpa": "4", "section": "A55"}, {"hash": "14d7e4664f0625d0269b51531e65ab78b6337e2985a708c1eef2fdcce91ed00c", "masked": "****6769", "gpa": "2", "section": "A55"}, {"hash": "a1bdf22e1922c48a567ccbe0c1523966343ff6504e6eeb7df3b8d45c0bc43c00", "masked": "****6985", "gpa": "2", "section": "A55"}, {"hash": "dd247a11729eba5e38f55319af1aa92a834ee2b70be62725e64326b07b4ef658", "masked": "****1281", "gpa": "3", "section": "A55"}, {"hash": "48ef35a44134e51063819613310557fcae9089e2d3060ea627d70959cc0e5020", "masked": "****0781", "gpa": "4", "section": "A55"}, {"hash": "99f31b946f34061ba579f80f1e7b9a89c0b94c1e0c318865126a45a519564cbc", "masked": "****3238", "gpa": "3", "section": "A54"}, {"hash": "c641c253f9529a7e42daa4aafde10f67224f05698afa450f3050b32eb9ec1d93", "masked": "****3408", "gpa": "3.5", "section": "A54"}, {"hash": "acf033e4fa512a577b29d022379c73cdcacc66b9da3dc6c314063b22079b638f", "masked": "****5933", "gpa": "2", "section": "A54"}, {"hash": "24aa963fa42289c6c806d206eb9d9df497b2100d0105ec8ad316cbb841533146", "masked": "****2637", "gpa": "3", "section": "A54"}, {"hash": "e09984df4d3df1b5d5c199f6212db67a509f4b899b497527aeb0e06cff9f7be8", "masked": "****5192", "gpa": "3.5", "section": "A54"}, {"hash": "acee03bbf500ebda41075811b18249ef4a6a7f47dc77f378c93442864fe45989", "masked": "****5251", "gpa": "3.5", "section": "A54"}, {"hash": "6649fc62bfa857e469656eb3f5f01e17dd7bbb42e0ea8667c77303733d79a6ec", "masked": "****1827", "gpa": "2", "section": "A54"}, {"hash": "f4778f43b62e4b05ab55e02f2a618c7c9293be9629e13d112d41d963a8129f47", "masked": "****9015", "gpa": "4", "section": "A54"}, {"hash": "7a7fea67080b61680d42d16b6983c26090c19c832e26054e8186e70e9a25658c", "masked": "****4994", "gpa": "4", "section": "A54"}, {"hash": "724eab28761e8e7e6c125d36cf999db517b6cb89b80c1684fddd48ae1a05f6d7", "masked": "****5158", "gpa": "3.5", "section": "A54"}, {"hash": "5d8d55c0745e89ae560042b9e0c4a3234bccb44e9de4ce8610bbfa1c8d0c0606", "masked": "****3572", "gpa": "2.5", "section": "A54"}, {"hash": "eb6970bf9577b90e9bd85a599bc5098d00420db8c9a3adc87fbd0cdd5154c72b", "masked": "****6156", "gpa": "3.5", "section": "A54"}, {"hash": "eddc6c96566417f9d066590e31262816293d2a4e36133bfe3c3587f6cf8be08c", "masked": "****2950", "gpa": "2.5", "section": "A54"}, {"hash": "dd2b618c529a520f0e62d90dad8402c1ed9cb9167832a63842625c9aff1a421f", "masked": "****9550", "gpa": "3.5", "section": "A54"}, {"hash": "9a8ad93620d9ee4f2e3abbcac764af7094284041e2dc67ec703bebb22d96d43f", "masked": "****5893", "gpa": "3", "section": "A54"}, {"hash": "e1e399f943ebf27a7a21f66ade8a6cacbdfc72b34d3853761460a047c85b8f0b", "masked": "****0594", "gpa": "3.5", "section": "A54"}, {"hash": "2e16ffb65b263b88092031558062d818ddc0873708157aa0aac23e6523c140c5", "masked": "****5474", "gpa": "2", "section": "A54"}, {"hash": "a464502192e545526064781fdcc54e5fd07d3e147342f9daa6bdab6e13cf29b2", "masked": "****6687", "gpa": "4", "section": "A54"}, {"hash": "d730a21fd540382e6221ce456dda3d6c9a4f6ee89038284fb35619c047d3f4ec", "masked": "****7853", "gpa": "4", "section": "A54"}, {"hash": "786890a23830ae92c03e7f47e0b5747b09257d93414871a8f90b6d2e89d2fab8", "masked": "****7470", "gpa": "3.5", "section": "A54"}, {"hash": "9d7089d44dc596ab25b02acdee6a9e8c3bae3ff535586a41f4d50f6a18b8d2f0", "masked": "****6799", "gpa": "3.5", "section": "A54"}, {"hash": "a5d867b007c30d1ca6b8455e2e5a70e3a85e1b51980c57a8897e1d53ba659ec1", "masked": "****6764", "gpa": "3.5", "section": "A54"}, {"hash": "3afd21748658af0dc8791207acb71290feabab8e0020ab6596b1f7497fabb4ff", "masked": "****7292", "gpa": "3", "section": "A54"}, {"hash": "85058f99b394b3a75729aabb4c892713ebe8817bea9111abfc3f8b2dd8fda5f4", "masked": "****8345", "gpa": "4", "section": "A54"}, {"hash": "d124ebee41f74205bf11c2cdf84336d763a2ba220abf760b3d13059eff17bf8a", "masked": "****9872", "gpa": "3.5", "section": "A54"}, {"hash": "0de3f71c8eda22276ad2144ef41cee7d3f6d0a90ff6f2aa4fd24c7c7cc8b9ae2", "masked": "****9260", "gpa": "3", "section": "A54"}, {"hash": "6e9fa478c4b87527e845a8cf65efa4e816b09723ef0bbbb2e2029c0b13ded635", "masked": "****0749", "gpa": "2", "section": "A54"}, {"hash": "30401b963cce1109778ed1d09ab918ae9026ed2f106da6490051d16876780f11", "masked": "****1559", "gpa": "3.5", "section": "A54"}, {"hash": "74c23207e489582a7a00965c0e86b48d1e318999065cecc9c65ece585166e722", "masked": "****0641", "gpa": "3", "section": "A54"}, {"hash": "9a5042eacc87a58bfc54459ba3222645a5a6c614e29789005899735601e531f8", "masked": "****1885", "gpa": "3", "section": "A54"}, {"hash": "8c666488058ca351b053549d6681e3d472e26f3bf75f953fd71fbaa1283041d5", "masked": "****2296", "gpa": "3.5", "section": "A54"}, {"hash": "bf8f85e2769dc9a8f2261a7dd6fd8c0536b48b16c04fefb8eb8d71ee6e4d2230", "masked": "****2137", "gpa": "3", "section": "A54"}, {"hash": "25ead720346f738ffb043423d1d0e8040420155f08585a0ed5e5218921247dc5", "masked": "****4105", "gpa": "3.5", "section": "A54"}, {"hash": "124661c045f6b940927cdcd5ad20f2994cf40e17a03f78dbf8d54892ac2bcbe1", "masked": "****6836", "gpa": "3", "section": "A54"}, {"hash": "9f4e8e943b7d4855c656bf55e5a7ec572214bb25311d2c478306f06b9556b726", "masked": "****1761", "gpa": "4", "section": "A54"}, {"hash": "9a12665de87055c007fc9e515106b85904782f3414442b51ca948e2a45cf3e85", "masked": "****1637", "gpa": "3", "section": "A54"}, {"hash": "66d84de6f67c5e4155a4dbf833558c83f8e54a1231cc51a410eeaee0014db5d6", "masked": "****2342", "gpa": "3.5", "section": "A54"}, {"hash": "175f49a8cb69e93ec00e61de08d315f1412677d8927e8dd47f27a8a975d273de", "masked": "****2107", "gpa": "3", "section": "A54"}, {"hash": "0810301646fb39ce91deda636aab0acda1e441558dd753a255906c9a4c97f42e", "masked": "****1605", "gpa": "3", "section": "A54"}];
+
+// helper: convert ArrayBuffer to hex
+function buf2hex(buffer) {
+  return Array.prototype.map.call(new Uint8Array(buffer), x => ('00' + x.toString(16)).slice(-2)).join('');
+}
+
+// hash input using SubtleCrypto
+async function sha256hex(message) {
+  const enc = new TextEncoder();
+  const data = enc.encode(message);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  return buf2hex(hashBuffer);
+}
+
+const q = document.getElementById('q');
+const btn = document.getElementById('btn');
+const resultArea = document.getElementById('resultArea');
+const resultBody = document.getElementById('resultBody');
+const notfound = document.getElementById('notfound');
+
+async function doSearch() {
+  const v = q.value.trim();
+  resultBody.innerHTML = '';
+  resultArea.classList.add('hidden');
+  notfound.classList.add('hidden');
+  if (!v) return;
+  // basic validation: require digits, reasonable length
+  if (!/^[0-9]{6,12}$/.test(v)) {
+    notfound.textContent = 'Please enter a numeric student ID (6–12 digits).';
+    notfound.classList.remove('hidden');
+    return;
+  }
+  const h = await sha256hex(v);
+  const hits = dataset.filter(d => d.hash === h);
+  if (hits.length === 0) {
+    notfound.textContent = 'No matching student ID found.';
+    notfound.classList.remove('hidden');
+    return;
+  }
+  // populate table
+  for (const r of hits) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td><code>${r.masked}</code></td><td>${r.gpa}</td><td>${r.section}</td>`;
+    resultBody.appendChild(tr);
+  }
+  resultArea.classList.remove('hidden');
+}
+
+btn.addEventListener('click', doSearch);
+q.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') doSearch();
+});
+</script>
+</body>
+</html>
