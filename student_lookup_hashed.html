@@ -20,20 +20,19 @@
 </head>
 <body>
 <div class="card" role="main">
-  <div class="muted">Search by Student ID (the data is stored hashed for privacy).</div>
+  <div class="muted">Search by Student ID.</div>
   <div class="search-row" style="margin-top:12px">
     <input id="q" type="search" placeholder="Enter 8-digit Student ID and press Enter" aria-label="Student ID">
     <button id="btn">Search</button>
   </div>
   <div id="resultArea" class="hidden" aria-live="polite">
     <table id="resultTable" role="table">
-      <thead><tr><th>Student (masked)</th><th>GPA</th><th>Section</th></tr></thead>
+      <thead><tr><th>Student ID</th><th>GPA</th><th>Section</th></tr></thead>
       <tbody id="resultBody"></tbody>
     </table>
   </div>
   <div id="notfound" class="notfound hidden">No matching student ID found.</div>
-  <p class="muted" style="margin-top:12px;font-size:13px">Notes: The page stores only SHA-256 hashes and masked IDs (last 4 digits). The lookup hashes the input in the browser and compares against the stored hashes—original IDs are not exposed in the file.</p>
-</div>
+  </div>
 
 <script>
 const dataset = [
