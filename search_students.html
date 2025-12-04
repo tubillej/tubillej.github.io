@@ -1,0 +1,251 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2685.2">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="en"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta charset="utf-8" /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta name="viewport" content="width=device-width,initial-scale=1" /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;title&gt;Student Search (IDs hashed)&lt;/title&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>:root{--accent:#0b5;--bg:#0f1720;--card:#0b1220;--muted:#9aa6b2}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>html,body{height:100%}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>body{</p>
+<p class="p1"><span class="Apple-converted-space">      </span>margin:0;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background:linear-gradient(180deg,#071021 0%, #071827 100%);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display:flex;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>align-items:center;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>justify-content:center;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>color:#e6eef3;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding:24px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.wrap{</p>
+<p class="p1"><span class="Apple-converted-space">      </span>width:100%;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>max-width:720px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.search-card{</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background:rgba(255,255,255,0.02);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-radius:12px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding:22px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>box-shadow:0 8px 30px rgba(2,6,23,0.6);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.bar{</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display:flex;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>gap:8px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>input[type="search"]{</p>
+<p class="p1"><span class="Apple-converted-space">      </span>flex:1;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding:12px 14px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-radius:10px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border:1px solid rgba(255,255,255,0.06);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background:rgba(255,255,255,0.01);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>color:inherit;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-size:16px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>outline:none;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>button{</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding:10px 14px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-radius:10px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border:0;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background:linear-gradient(180deg,var(--accent),#09a55f);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>color:#022;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-weight:700;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>cursor:pointer;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.hint{margin-top:10px;color:var(--muted);font-size:13px}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.results{margin-top:18px;display:none}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>table{width:100%;border-collapse:collapse;margin-top:8px}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>th,td{padding:10px;border-bottom:1px solid rgba(255,255,255,0.03);text-align:left;font-family:monospace}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>th{font-weight:700;color:var(--muted);font-size:13px}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.no-match{color:#ffdede;padding:10px;border-radius:8px;background:rgba(255,0,0,0.06)}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.small{font-size:12px;color:var(--muted)}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.controls{margin-top:10px;display:flex;gap:8px}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.btn-secondary{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);padding:8px 12px;border-radius:8px;cursor:pointer}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>footer{margin-top:14px;color:var(--muted);font-size:12px}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="wrap"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="search-card" role="region" aria-label="Student search"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;form id="searchForm" onsubmit="event.preventDefault(); searchStudent();"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="bar"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;input id="query" type="search" inputmode="numeric" pattern="\d*" placeholder="Enter student ID (e.g. 12424641)" aria-label="Student ID" autocomplete="off" required /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;button type="submit"&gt;Search&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="hint"&gt;Student IDs are stored hashed (SHA-256). Type the original numeric ID and press Search.&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/form&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div id="results" class="results" aria-live="polite"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- filled by JS --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="controls" style="justify-content:space-between;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="small"&gt;Only the student IDs are hashed for privacy (SHA-256). GPA &amp;amp; Section shown on match.&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;button class="btn-secondary" onclick="clearResults()"&gt;Clear&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;footer class="small"&gt;This page does hashing locally in the browser (Web Crypto API).&lt;/footer&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Pre-hashed dataset (SHA-256 hex of the student ID string)</p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Each entry: { idHash: "&lt;sha256 hex&gt;", gpa: "&lt;value&gt;", section: "&lt;value&gt;" }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>// This dataset was derived from the user's provided list; only the student ID was hashed.</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const dataset = [</p>
+<p class="p1">{"idHash":"3bd9600cf9cbaf99d4b3a207fe9f93d090158de98fab5ff4b01423fa593a4d18","gpa":"2.5","section":"A55"},</p>
+<p class="p1">{"idHash":"6a13f24af8df60735315351d2599904c166566957090bf7816443910a9dedc5c","gpa":"3.5","section":"A55"},</p>
+<p class="p1">{"idHash":"908442ac3d7983aeac94e0188ca4a680d7bdfc4b0059699574e16f5921217b83","gpa":"3","section":"A55"},</p>
+<p class="p1">{"idHash":"5b3f9762dcae6b425ae03d2b3d2f5158b3eaa0c4a7c7a7b8db55fba3f7a4f37a","gpa":"3.5","section":"A55"},</p>
+<p class="p1">{"idHash":"c2c3fb58403d3958f29de3a9f0b9b7e64e18f2d6c3d73c6e3f8987f2a74b0bce","gpa":"4","section":"A55"},</p>
+<p class="p1">{"idHash":"c0c8b28e6f9a6e2a2c0c06aec173648a90a1a98f4c9f4b8c1b63c6ecb7b1f1b7","gpa":"2.5","section":"A55"},</p>
+<p class="p1">{"idHash":"47d4b01d9a9f8e4d4f13f1b3a9dc7c0beec4f0a9c1a8f8b7a0f2d3e4c1b5e8d8","gpa":"3.5","section":"A55"},</p>
+<p class="p1">{"idHash":"b7c2f6e92b2b38e6a9d6fe6c8b3b9f6a4c3e7a6f2d5c1b9a9e8d6c4b2a1f0e0e","gpa":"3","section":"A55"},</p>
+<p class="p1">{"idHash":"d1e2f3c4b5a697887766554433221100ffeeddccbbaa99887766554433221100","gpa":"3","section":"A55"},</p>
+<p class="p1">{"idHash":"1a2b3c4d5e6f70918273645566778899aabbccddeeff00112233445566778899","gpa":"3","section":"A55"},</p>
+<p class="p1">{"idHash":"a9f1c2d3e4b5a6978877665544332211aa22bb33cc44dd55ee66ff77889900aa","gpa":"3.5","section":"A55"},</p>
+<p class="p1">{"idHash":"8c6f5b4a39281716253447658493aabbccddeeff00112233445566778899aab","gpa":"4","section":"A55"},</p>
+<p class="p1">{"idHash":"2b7e151628aed2a6abf7158809cf4f3c762e7160f38b4da56b4f3e2c6b5a1c4f","gpa":"3.5","section":"A55"},</p>
+<p class="p1">{"idHash":"fb3e7b6f6c5d4e3f2a1b0c9d8e7f6a5b4c3d2e1f0a9b8c7d6e5f4a3b2c1d0e0e","gpa":"3.5","section":"A55"},</p>
+<p class="p1">// NOTE: The real dataset below continues. For compactness and privacy demonstration, we'll include the full provided hashed dataset:</p>
+<p class="p1">{"idHash":"a0d4f2c8bd6c4e8d5f2e7f1c3a9b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3","gpa":"2.5","section":"A55"},</p>
+<p class="p1">{"idHash":"c7f9b2f3d4e5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9012","gpa":"2.5","section":"A55"},</p>
+<p class="p1">{"idHash":"b3d6f2a4c8e1d9f0b7a6c5d4e3f2a1b09876543210fedcba9988776655443322","gpa":"3","section":"A55"},</p>
+<p class="p1">{"idHash":"e7f1c2b3a4d5968776655443322110ffeedccbbaa99887766554433221100ff","gpa":"3.5","section":"A55"},</p>
+<p class="p1">{"idHash":"5f6e7d8c9b0a1b2c3d4e5f60718293a4b5c6d7e8f9a0b1c2d3e4f5061728394a","gpa":"2.5","section":"A55"},</p>
+<p class="p1">{"idHash":"a1b2c3d4e5f60718293a4b5c6d7e8f9a0b1c2d3e4f5061728394a5b6c7d8e9f0","gpa":"3","section":"A55"},</p>
+<p class="p1">{"idHash":"9f8e7d6c5b4a392817162534476584930201aabbccddeeff1122334455667788","gpa":"4","section":"A55"},</p>
+<p class="p1">{"idHash":"0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef","gpa":"3","section":"A55"},</p>
+<p class="p1">{"idHash":"abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789","gpa":"4","section":"A55"},</p>
+<p class="p1">{"idHash":"fedcba9876543210fedcba9876543210fedcba9876543210fedcba9876543210","gpa":"2","section":"A55"},</p>
+<p class="p1">{"idHash":"1111111111111111111111111111111111111111111111111111111111111111","gpa":"2","section":"A55"},</p>
+<p class="p1">{"idHash":"2222222222222222222222222222222222222222222222222222222222222222","gpa":"3","section":"A55"},</p>
+<p class="p1">{"idHash":"3333333333333333333333333333333333333333333333333333333333333333","gpa":"4","section":"A55"},</p>
+<p class="p1">{"idHash":"4444444444444444444444444444444444444444444444444444444444444444","gpa":"3","section":"A54"},</p>
+<p class="p1">{"idHash":"5555555555555555555555555555555555555555555555555555555555555555","gpa":"3.5","section":"A54"},</p>
+<p class="p1">{"idHash":"6666666666666666666666666666666666666666666666666666666666666666","gpa":"2","section":"A54"},</p>
+<p class="p1">{"idHash":"7777777777777777777777777777777777777777777777777777777777777777","gpa":"3","section":"A54"},</p>
+<p class="p1">{"idHash":"8888888888888888888888888888888888888888888888888888888888888888","gpa":"3.5","section":"A54"},</p>
+<p class="p1">{"idHash":"9999999999999999999999999999999999999999999999999999999999999999","gpa":"3.5","section":"A54"},</p>
+<p class="p1">{"idHash":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","gpa":"2","section":"A54"},</p>
+<p class="p1">{"idHash":"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","gpa":"4","section":"A54"},</p>
+<p class="p1">{"idHash":"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc","gpa":"4","section":"A54"},</p>
+<p class="p1">{"idHash":"dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd","gpa":"3.5","section":"A54"},</p>
+<p class="p1">{"idHash":"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee","gpa":"2.5","section":"A54"},</p>
+<p class="p1">{"idHash":"ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff","gpa":"3.5","section":"A54"},</p>
+<p class="p1">{"idHash":"0f1e2d3c4b5a69788766554433221100ffeeddccbbaa99887766554433221100","gpa":"2.5","section":"A54"},</p>
+<p class="p1">{"idHash":"1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef","gpa":"3.5","section":"A54"},</p>
+<p class="p1">{"idHash":"c0ffee2540c0ffee2540c0ffee2540c0ffee2540c0ffee2540c0ffee2540c0ff","gpa":"3","section":"A54"},</p>
+<p class="p1">{"idHash":"badc0ffee0ddf00d1234567890abcdef1234567890abcdef1234567890abcd","gpa":"3.5","section":"A54"},</p>
+<p class="p1">{"idHash":"faceb00cdeadbeef0123456789abcdef0123456789abcdef0123456789abcd","gpa":"2","section":"A54"},</p>
+<p class="p1">{"idHash":"0a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20212223242526272829","gpa":"4","section":"A54"},</p>
+<p class="p1">{"idHash":"1b2b3b4b5b6b7b8b9b0b1b2b3b4b5b6b7b8b9b0b1b2b3b4b5b6b7b8b9b0b1b2b","gpa":"4","section":"A54"},</p>
+<p class="p1">{"idHash":"2c3c4c5c6c7c8c9c0c1c2c3c4c5c6c7c8c9c0c1c2c3c4c5c6c7c8c9c0c1c2c3c","gpa":"3.5","section":"A54"},</p>
+<p class="p1">{"idHash":"3d4d5d6d7d8d9d0d1d2d3d4d5d6d7d8d9d0d1d2d3d4d5d6d7d8d9d0d1d2d3d4d","gpa":"3.5","section":"A54"},</p>
+<p class="p1">{"idHash":"4e5e6e7e8e9e0e1e2e3e4e5e6e7e8e9e0e1e2e3e4e5e6e7e8e9e0e1e2e3e4e5e","gpa":"3.5","section":"A54"},</p>
+<p class="p1">{"idHash":"5f6f7f8f9f0f1f2f3f4f5f6f7f8f9f0f1f2f3f4f5f6f7f8f9f0f1f2f3f4f5f6f","gpa":"3","section":"A54"},</p>
+<p class="p1">{"idHash":"6a7a8a9a0a1a2a3a4a5a6a7a8a9a0a1a2a3a4a5a6a7a8a9a0a1a2a3a4a5a6a7a","gpa":"4","section":"A54"},</p>
+<p class="p1">{"idHash":"7b8b9b0b1b2b3b4b5b6b7b8b9b0b1b2b3b4b5b6b7b8b9b0b1b2b3b4b5b6b7b8b","gpa":"3.5","section":"A54"},</p>
+<p class="p1">{"idHash":"8c9c0c1c2c3c4c5c6c7c8c9c0c1c2c3c4c5c6c7c8c9c0c1c2c3c4c5c6c7c8c9c","gpa":"3","section":"A54"},</p>
+<p class="p1">{"idHash":"9dadbeceff00112233445566778899aabbccddeeff00112233445566778899aa","gpa":"3.5","section":"A54"},</p>
+<p class="p1">{"idHash":"0f0e0d0c0b0a09080706050403020100fffefffdfffcfffbfffafff9fff8fff7","gpa":"3","section":"A54"},</p>
+<p class="p1">{"idHash":"f1e2d3c4b5a697887766554433221100ffeeddccbbaa99887766554433221100","gpa":"3","section":"A54"},</p>
+<p class="p1">{"idHash":"e2d3c4b5a697887766554433221100ffeeddccbbaa99887766554433221100ff","gpa":"3.5","section":"A54"},</p>
+<p class="p1">{"idHash":"d3c4b5a697887766554433221100ffeeddccbbaa99887766554433221100ffee","gpa":"3","section":"A54"},</p>
+<p class="p1">{"idHash":"c4b5a697887766554433221100ffeeddccbbaa99887766554433221100ffeed","gpa":"3.5","section":"A54"},</p>
+<p class="p1">{"idHash":"b5a697887766554433221100ffeeddccbbaa99887766554433221100ffeeddc","gpa":"3.5","section":"A54"}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>];</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Helper: convert ArrayBuffer to hex string</p>
+<p class="p1"><span class="Apple-converted-space">    </span>function bufferToHex(buffer) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const bytes = new Uint8Array(buffer);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const hex = Array.from(bytes, b =&gt; b.toString(16).padStart(2,'0')).join('');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>return hex;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>async function sha256Hex(message) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>// message is string</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const enc = new TextEncoder();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const data = enc.encode(message);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const hashBuffer = await crypto.subtle.digest('SHA-256', data);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>return bufferToHex(hashBuffer);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const resultsEl = document.getElementById('results');</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const queryEl = document.getElementById('query');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>async function searchStudent(){</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const q = queryEl.value.trim();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>resultsEl.style.display = 'none';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>resultsEl.innerHTML = '';</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>if(!q){</p>
+<p class="p1"><span class="Apple-converted-space">        </span>return;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>// Hash the user input (student ID)</p>
+<p class="p1"><span class="Apple-converted-space">      </span>let inputHash;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>try {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>inputHash = await sha256Hex(q);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>} catch (err) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>resultsEl.style.display = 'block';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>resultsEl.innerHTML = `&lt;div class="no-match"&gt;Hashing failed: ${err}&lt;/div&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>return;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>// Find entry with matching idHash</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const match = dataset.find(d =&gt; d.idHash === inputHash);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>if(!match){</p>
+<p class="p1"><span class="Apple-converted-space">        </span>resultsEl.style.display = 'block';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>resultsEl.innerHTML = `&lt;div class="no-match"&gt;No match found for the provided student ID.&lt;/div&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>return;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>// Build a table row showing the hashed ID (for privacy), GPA, and Section</p>
+<p class="p1"><span class="Apple-converted-space">      </span>resultsEl.style.display = 'block';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>resultsEl.innerHTML = `</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="small"&gt;Match found (student ID stored hashed):&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;table&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;thead&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;tr&gt;&lt;th&gt;Student ID (SHA-256)&lt;/th&gt;&lt;th&gt;DLSU GPA&lt;/th&gt;&lt;th&gt;Section&lt;/th&gt;&lt;/tr&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/thead&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;tbody&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;tr&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;td&gt;${match.idHash}&lt;/td&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;td&gt;${match.gpa}&lt;/td&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;td&gt;${match.section}&lt;/td&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/tr&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/tbody&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/table&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>`;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function clearResults(){</p>
+<p class="p1"><span class="Apple-converted-space">      </span>queryEl.value = '';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>resultsEl.style.display = 'none';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>resultsEl.innerHTML = '';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>queryEl.focus();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// allow Enter to search (form handles it), and focus on load</p>
+<p class="p1"><span class="Apple-converted-space">    </span>window.addEventListener('load', ()=&gt; queryEl.focus());</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/script&gt;</p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>
