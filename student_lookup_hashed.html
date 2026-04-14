@@ -121,7 +121,7 @@ const fieldConfig = {
 async function downloadGradeReport() {
   const element = resultArea;
   const opt = {
-    margin: 10,
+    margin: [10, 10],
     filename: 'grade_report.pdf',
     image: { type: 'jpeg', quality: 0.98 },
     html2canvas: { scale: 2 },
