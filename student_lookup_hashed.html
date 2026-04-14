@@ -27,7 +27,7 @@
   </div>
   <div id="resultArea" class="hidden" aria-live="polite">
     <table id="resultTable" role="table">
-      <thead><tr><th>Student ID</th><th>GPA</th><th>Section</th></tr></thead>
+      <thead><tr><th>Field</th><th>Value</th></tr></thead>
       <tbody id="resultBody"></tbody>
     </table>
   </div>
@@ -92,9 +92,11 @@ async function doSearch() {
   }
   // populate table
   for (const r of hits) {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td><code>${r['Display ID']}</code></td><td>${r['DLSU GPA Equivalent']}</td><td>${r['Section Name']}</td>`;
-    resultBody.appendChild(tr);
+    for (const [key, value] of Object.entries(r)) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td><strong>${key}</strong></td><td>${value}</td>`;
+      resultBody.appendChild(tr);
+    }
   }
   resultArea.classList.remove('hidden');
 }
