@@ -3,298 +3,243 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Student Lookup</title>
+<title>Student Lookup (hashed)</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-
 <style>
-:root{
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-  --bg:#f6f7f9;
-  --card:#ffffff;
-  --border:#e6e6e6;
-  --text:#2f2f2f;
-  --muted:#8a8a8a;
-  --accent:#1e3a8a;
-}
-
-body{
-  margin:0;
-  background:var(--bg);
-  display:flex;
-  justify-content:center;
-  padding:16px;
-}
-
-.container{
-  width:100%;
-  max-width:720px;
-}
-
-.card{
-  background:var(--card);
-  border-radius:12px;
-  padding:16px;
-  box-shadow:0 4px 16px rgba(0,0,0,0.05);
-}
-
-/* SEARCH */
-.search{
-  display:flex;
-  gap:8px;
-  margin-bottom:16px;
-}
-
-.search input{
-  flex:1;
-  padding:12px;
-  border-radius:8px;
-  border:1px solid var(--border);
-  font-size:16px;
-}
-
-.search button{
-  padding:12px 14px;
-  border:none;
-  border-radius:8px;
-  background:#111;
-  color:white;
-  cursor:pointer;
-}
-
-/* HEADER */
-.student-header{
-  margin-bottom:16px;
-}
-
-.student-name{
-  font-size:18px;
-  font-weight:600;
-}
-
-.student-meta{
-  font-size:13px;
-  color:var(--muted);
-}
-
-.student-grade{
-  margin-top:8px;
-  font-size:20px;
-  font-weight:700;
-  color:var(--accent);
-}
-
-/* SECTION */
-.section{
-  margin-top:16px;
-}
-
-.section-title{
-  font-size:12px;
-  text-transform:uppercase;
-  color:var(--muted);
-  margin-bottom:8px;
-  display:flex;
-  align-items:center;
-  gap:6px;
-}
-
-/* ITEMS */
-.item{
-  display:flex;
-  justify-content:space-between;
-  padding:10px 0;
-  border-bottom:1px solid var(--border);
-  font-size:14px;
-}
-
-.item:last-child{
-  border-bottom:none;
-}
-
-.label{
-  color:var(--muted);
-}
-
-.value{
-  font-weight:500;
-}
-
-/* BUTTON */
-.download{
-  margin-top:16px;
-  width:100%;
-  padding:12px;
-  border-radius:8px;
-  border:1px solid var(--border);
-  background:#fff;
-  cursor:pointer;
-}
-
-/* BREAKDOWN */
-.breakdown{
-  margin-top:20px;
-  padding-top:12px;
-  border-top:1px solid var(--border);
-}
-
-.break-row{
-  display:flex;
-  justify-content:space-between;
-  font-size:13px;
-  margin-bottom:6px;
-}
-
-.total{
-  font-weight:700;
-  color:var(--accent);
-  margin-top:8px;
-}
-
-/* STATES */
-.hidden{display:none;}
-.error{
-  color:#d63031;
-  font-size:14px;
-  margin-top:10px;
-}
+  :root{font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;}
+  body{display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;background:#f5f5f5;color:#37352f;padding:20px}
+  .card{width:min(900px,95vw);background:white;padding:20px;border-radius:4px;box-shadow:0 1px 2px rgba(0,0,0,0.04), 0 0 0 1px rgba(0,0,0,0.04);max-height:90vh;overflow-y:auto}
+  @media (min-width: 600px) {
+    .card{padding:40px}
+  }
+  .search-row{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap}
+  input[type="search"]{flex:1;min-width:200px;padding:10px 12px;border-radius:4px;border:1px solid #d9d9d9;font-size:16px;background:#fff;color:#37352f;transition:border 0.2s;-webkit-appearance:none}
+  input[type="search"]:focus{outline:none;border-color:#a8a8a8}
+  button{padding:10px 16px;border-radius:4px;border:1px solid #e0e0e0;background:#f5f5f5;color:#37352f;font-weight:500;cursor:pointer;font-size:14px;transition:all 0.15s;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+  button:hover{background:#efefef;border-color:#ccc}
+  button.secondary{border:1px solid #e0e0e0;margin-top:16px;width:100%;background:#fff;justify-content:center}
+  button.secondary:hover{background:#f9f9f9}
+  button i{font-size:16px}
+  table{width:100%;border-collapse:collapse;margin-top:24px;font-size:14px}
+  @media (max-width: 599px) {
+    table{font-size:13px}
+  }
+  th,td{text-align:left;padding:10px 8px;border-bottom:1px solid #eaeaea;word-wrap:break-word;overflow-wrap:break-word}
+  @media (min-width: 600px) {
+    th,td{padding:11px 12px}
+  }
+  td strong{font-weight:600;color:#37352f}
+  .muted{color:#9a9a9a;font-size:14px;margin-bottom:16px}
+  .hidden{display:none}
+  .notfound{margin-top:12px;color:#d63031;font-weight:500;font-size:14px}
+  .section-header{background:#fbfbfb;font-weight:600;padding:10px 8px;border-bottom:1px solid #eaeaea;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;color:#7a7a7a}
+  @media (min-width: 600px) {
+    .section-header{padding:12px 12px}
+  }
+  .section-header i{margin-right:8px;color:#5a5a5a}
+  .final-grade{font-weight:700;color:#1e3a8a;font-size:15px}
 </style>
 </head>
-
 <body>
-<div class="container">
-  <div class="card">
-    
-    <div class="search">
-      <input id="q" type="search" placeholder="Enter Student ID">
-      <button id="btn"><i class="bi bi-search"></i></button>
-    </div>
-
-    <div id="result" class="hidden"></div>
-    <div id="error" class="error hidden"></div>
-
+<div class="card" role="main">
+  <div class="muted">Search by Student ID.</div>
+  <div class="search-row" style="margin-top:12px">
+    <input id="q" type="search" placeholder="Enter 8-digit Student ID and press Enter" aria-label="Student ID">
+    <button id="btn">Search</button>
   </div>
-</div>
+  <div id="resultArea" class="hidden" aria-live="polite">
+    <table id="resultTable" role="table">
+      <thead><tr><th>Field</th><th>Value</th></tr></thead>
+      <tbody id="resultBody"></tbody>
+    </table>
+  </div>
+  <div id="notfound" class="notfound hidden">No matching student ID found.</div>
+  </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
 <script>
 let dataset = [];
 
+// Load grades.json on page load
 async function loadDataset() {
-  const res = await fetch('grades.json');
-  dataset = await res.json();
+  try {
+    const response = await fetch('grades.json');
+    dataset = await response.json();
+  } catch (error) {
+    console.error('Failed to load grades.json:', error);
+    notfound.textContent = 'Error loading student data. Please refresh the page.';
+    notfound.classList.remove('hidden');
+  }
 }
+
+// Initialize dataset when page loads
 document.addEventListener('DOMContentLoaded', loadDataset);
 
+// Helper function: convert ArrayBuffer to hex
 function buf2hex(buffer) {
   return Array.prototype.map.call(new Uint8Array(buffer), x => ('00' + x.toString(16)).slice(-2)).join('');
 }
 
+// Hash input using SubtleCrypto
 async function sha256hex(message) {
-  const data = new TextEncoder().encode(message);
-  const hash = await crypto.subtle.digest('SHA-256', data);
-  return buf2hex(hash);
+  const enc = new TextEncoder();
+  const data = enc.encode(message);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  return buf2hex(hashBuffer);
 }
 
-function format(val){
-  const num = parseFloat(val);
-  return isNaN(num) ? val : num.toFixed(2);
+// Format percentage values to 2 decimal places
+function formatValue(fieldName, value) {
+  if (fieldName.includes('% Equivalent') || fieldName.includes('Total Percentage')) {
+    const num = parseFloat(value);
+    if (!isNaN(num)) {
+      return num.toFixed(2);
+    }
+  }
+  return value;
 }
 
+// Format raw scores to show as value/max (e.g., 30/60)
+function formatRawScore(fieldName, value) {
+  const match = fieldName.match(/\s*\/\s*(\d+)$/);
+  if (match) {
+    const maxScore = match[1];
+    return `${value}/${maxScore}`;
+  }
+  return value;
+}
+
+// Check if this is a final grade field
+function isFinalGrade(fieldName) {
+  return fieldName === 'DLSU GPA Equivalent' || fieldName === 'Total Percentage';
+}
+
+const q = document.getElementById('q');
+const btn = document.getElementById('btn');
+const resultArea = document.getElementById('resultArea');
+const resultBody = document.getElementById('resultBody');
+const notfound = document.getElementById('notfound');
+
+// Field name mappings and grouping
 const fieldConfig = {
-  "Insight Papers": {weight:30, raw:"Insight Papers / 60", max:60, icon:"bi-pencil"},
-  "Class Participation": {weight:20, raw:"Class Participation / 7", max:7, icon:"bi-chat"},
-  "Final Output Proposal": {weight:10, raw:"Final Output Proposal / 16", max:16, icon:"bi-lightbulb"},
-  "Final Output": {weight:30, raw:"Final Output / 28", max:28, icon:"bi-check-circle"},
-  "Peer Evaluation": {weight:10, raw:"Peer Evaluation / 16", max:16, icon:"bi-star"}
+  'Student Information': {
+    fields: ['Display Name', 'Display ID', 'Total Percentage', 'DLSU GPA Equivalent', 'Section Name'],
+    mapping: {
+      'Display Name': 'Name',
+      'Display ID': 'Student ID'
+    },
+    icon: 'bi-person-badge'
+  },
+  'Insight Papers': {
+    fields: ['Module 1', 'Module 2', 'Module 3', 'Insight Paper (Raw Score) / 60', '% Equivalent Insight Papers'],
+    mapping: {
+      'Insight Paper (Raw Score) / 60': 'Insight Paper'
+    },
+    icon: 'bi-pencil-square'
+  },
+  'Class Participation': {
+    fields: ['Authenticity Scale', 'OCEAN Activity (class activity)', 'Anthropological Views of the Self (class activity)', 'Physical Self (discussion thread)', 'Economic Self (discussion thread)', 'Psychological Flexibility', 'Virtues and Character Strengths (VIA Survey)', 'Index Card (additional point)', 'Class Participation (Raw Score) / 7', '% Equivalent Class Participation'],
+    mapping: {
+      'Class Participation (Raw Score) / 7': 'Class Participation'
+    },
+    icon: 'bi-chat-dots'
+  },
+  'Final Output': {
+    fields: ['Final Output (Raw Score) / 28', '% Equivalent FInal Output'],
+    mapping: {
+      'Final Output (Raw Score) / 28': 'Final Output'
+    },
+    icon: 'bi-check-circle'
+  },
+  'Peer Evaluation': {
+    fields: ['Peer Evaluation (Raw Score) / 16', '% Equivalent Peer evaluation'],
+    mapping: {
+      'Peer Evaluation (Raw Score) / 16': 'Peer Evaluation'
+    },
+    icon: 'bi-star'
+  }
 };
 
-function generate(record){
-
-  let html = `
-    <div class="student-header">
-      <div class="student-name">${record["Display Name"]}</div>
-      <div class="student-meta">${record["Display ID"]} • ${record["Section Name"]}</div>
-      <div class="student-grade">${format(record["Total Percentage"])}% • GPA ${record["DLSU GPA Equivalent"]}</div>
-    </div>
-  `;
-
-  for (const [section, cfg] of Object.entries(fieldConfig)){
-    const raw = record[cfg.raw];
-    if (!raw) continue;
-
-    html += `
-      <div class="section">
-        <div class="section-title"><i class="bi ${cfg.icon}"></i>${section}</div>
-        <div class="item">
-          <div class="label">Score</div>
-          <div class="value">${raw}/${cfg.max}</div>
-        </div>
-        <div class="item">
-          <div class="label">Weight</div>
-          <div class="value">${cfg.weight}%</div>
-        </div>
-      </div>
-    `;
-  }
-
-  html += `<button class="download" onclick="download()">Download Report</button>`;
-
-  // breakdown
-  let total = 0;
-  html += `<div class="breakdown">`;
-
-  for (const [section, cfg] of Object.entries(fieldConfig)){
-    const raw = parseFloat(record[cfg.raw]);
-    if (!raw) continue;
-
-    const pct = (raw/cfg.max)*100;
-    const weighted = pct * cfg.weight / 100;
-    total += weighted;
-
-    html += `
-      <div class="break-row">
-        <span>${section}</span>
-        <span>${weighted.toFixed(2)}%</span>
-      </div>
-    `;
-  }
-
-  html += `<div class="break-row total">Total: ${total.toFixed(2)}%</div></div>`;
-
-  return html;
+async function downloadGradeReport() {
+  const element = resultArea;
+  const opt = {
+    margin: [10, 10],
+    filename: 'grade_report.pdf',
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2 },
+    jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
+  };
+  
+  // Generate and download PDF
+  await html2pdf().set(opt).from(element).save();
 }
 
-async function search(){
-  const v = document.getElementById('q').value.trim();
-  const result = document.getElementById('result');
-  const error = document.getElementById('error');
-
-  result.classList.add('hidden');
-  error.classList.add('hidden');
-
+async function doSearch() {
+  const v = q.value.trim();
+  resultBody.innerHTML = '';
+  resultArea.classList.add('hidden');
+  notfound.classList.add('hidden');
   if (!v) return;
-
-  const h = await sha256hex(v);
-  const rec = dataset.find(d => d["Hash ID"] === h);
-
-  if (!rec){
-    error.textContent = "No student found.";
-    error.classList.remove('hidden');
+  // basic validation: require digits, reasonable length
+  if (!/^[0-9]{6,12}$/.test(v)) {
+    notfound.textContent = 'Please enter a numeric student ID (6–12 digits).';
+    notfound.classList.remove('hidden');
     return;
   }
-
-  result.innerHTML = generate(rec);
-  result.classList.remove('hidden');
+  const h = await sha256hex(v);
+  const hits = dataset.filter(d => d['Hash ID'] === h);
+  if (hits.length === 0) {
+    notfound.textContent = 'No matching student ID found.';
+    notfound.classList.remove('hidden');
+    return;
+  }
+  
+  // populate table with grouped sections
+  for (const record of hits) {
+    let sectionCount = 0;
+    for (const [section, config] of Object.entries(fieldConfig)) {
+      sectionCount++;
+      // Add section header
+      const headerRow = document.createElement('tr');
+      const iconClass = config.icon || 'bi-info-circle';
+      headerRow.innerHTML = `<td colspan="2" class="section-header"><i class="bi ${iconClass}"></i> ${section}</td>`;
+      resultBody.appendChild(headerRow);
+      
+      // Add fields in this section
+      for (const fieldKey of config.fields) {
+        if (fieldKey in record) {
+          const tr = document.createElement('tr');
+          const displayName = (config.mapping && config.mapping[fieldKey]) || fieldKey;
+          let value = formatValue(displayName, record[fieldKey]);
+          
+          // Check if this is a raw score field (e.g., "Insight Paper (Raw Score) / 60")
+          if (fieldKey.includes('(Raw Score)')) {
+            value = formatRawScore(fieldKey, value);
+          }
+          
+          if (isFinalGrade(displayName)) {
+            tr.innerHTML = `<td><strong>${displayName}</strong></td><td class="final-grade">${value}</td>`;
+          } else {
+            tr.innerHTML = `<td><strong>${displayName}</strong></td><td>${value}</td>`;
+          }
+          resultBody.appendChild(tr);
+        }
+      }
+      
+      // Add download button after first section
+      if (sectionCount === 1) {
+        const downloadRow = document.createElement('tr');
+        downloadRow.innerHTML = `<td colspan="2"><button class="secondary" onclick="downloadGradeReport()"><i class="bi bi-download"></i> Download Grade Report</button></td>`;
+        resultBody.appendChild(downloadRow);
+      }
+    }
+  }
+  resultArea.classList.remove('hidden');
 }
 
-function download(){
-  html2pdf().from(document.getElementById("result")).save();
-}
-
-document.getElementById('btn').onclick = search;
-document.getElementById('q').addEventListener('keydown', e=>{
-  if(e.key==="Enter") search();
+btn.addEventListener('click', doSearch);
+q.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') doSearch();
 });
 </script>
 </body>
