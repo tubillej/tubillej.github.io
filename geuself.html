@@ -144,14 +144,14 @@ const fieldConfig = {
     icon: 'bi-person-badge'
   },
   'Insight Papers': {
-    fields: ['Module 1', 'Module 2', 'Module 3', 'Insight Paper (Raw Score) / 60', '% Equivalent Insight Papers'],
+    fields: ['Module 1', 'Module 2', 'Module 3', 'Insight Papers / 60', '% Equivalent Insight Papers'],
     mapping: {
-      'Insight Paper (Raw Score) / 60': 'Insight Paper'
+      'Insight Papers / 60': 'Insight Papers'
     },
     icon: 'bi-pencil-square',
     weight: 30,
-    rawScoreField: 'Insight Paper (Raw Score) / 60',
-    percentField: '% Equivalent Insight Papers'
+    rawScoreField: 'Insight Papers / 60',
+    maxScore: 60
   },
   'Class Participation': {
     fields: ['Authenticity Scale', 'OCEAN Activity (class activity)', 'Anthropological Views of the Self (class activity)', 'Physical Self (discussion thread)', 'Economic Self (discussion thread)', 'Psychological Flexibility', 'Virtues and Character Strengths (VIA Survey)', 'Index Card (additional point)', 'Class Participation / 7', '% Equivalent Class Participation'],
@@ -161,7 +161,7 @@ const fieldConfig = {
     icon: 'bi-chat-dots',
     weight: 20,
     rawScoreField: 'Class Participation / 7',
-    percentField: '% Equivalent Class Participation'
+    maxScore: 7
   },
   'Final Output Proposal': {
     fields: ['Final Output Proposal / 16', '% Equivalent'],
@@ -171,7 +171,7 @@ const fieldConfig = {
     icon: 'bi-lightbulb',
     weight: 10,
     rawScoreField: 'Final Output Proposal / 16',
-    percentField: '% Equivalent'
+    maxScore: 16
   },
   'Final Output': {
     fields: ['Final Output / 28', '% Equivalent FInal Output'],
@@ -181,7 +181,7 @@ const fieldConfig = {
     icon: 'bi-check-circle',
     weight: 30,
     rawScoreField: 'Final Output / 28',
-    percentField: '% Equivalent FInal Output'
+    maxScore: 28
   },
   'Peer Evaluation': {
     fields: ['Peer Evaluation / 16', '% Equivalent Peer evaluation'],
@@ -191,7 +191,7 @@ const fieldConfig = {
     icon: 'bi-star',
     weight: 10,
     rawScoreField: 'Peer Evaluation / 16',
-    percentField: '% Equivalent Peer evaluation'
+    maxScore: 16
   }
 };
 
@@ -215,10 +215,12 @@ function generateGradingBreakdown(record) {
   
   for (const [section, config] of Object.entries(fieldConfig)) {
     // Skip non-evaluated sections
-    if (!config.weight || !config.rawScoreField || !config.percentField) continue;
+    if (!config.weight || !config.rawScoreField || !config.maxScore) continue;
     
-    if (config.rawScoreField in record && config.percentField in record) {
-      const percentage = parseFloat(record[config.percentField]);
+    if (config.rawScoreField in record) {
+      const rawScore = parseFloat(record[config.rawScoreField]);
+      const maxScore = config.maxScore;
+      const percentage = (rawScore / maxScore) * 100;
       const weight = config.weight;
       const weightedScore = (percentage * weight) / 100;
       
