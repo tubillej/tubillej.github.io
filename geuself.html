@@ -210,7 +210,18 @@ async function downloadGradeReport() {
 }
 
 function generateGradingBreakdown(record) {
-  let breakdownHTML = '<h3>Grading Breakdown</h3><ul>';
+  let breakdownHTML = '<h3>Grading Breakdown</h3>';
+  breakdownHTML += `
+    <div style="display: flex; justify-content: space-between; margin-bottom: 8px; padding: 8px 0; border-bottom: 2px solid #e0e0e0; font-weight: 600; color: #7a7a7a;">
+      <div style="flex: 1;">Category</div>
+      <div style="display: flex; gap: 24px; align-items: center; text-align: right;">
+        <div style="width: 100px;">Raw Score</div>
+        <div style="width: 80px;">Weight</div>
+        <div style="width: 120px;">Weighted</div>
+      </div>
+    </div>
+  `;
+  breakdownHTML += '<ul>';
   let totalWeightedScore = 0;
   
   for (const [section, config] of Object.entries(fieldConfig)) {
@@ -228,12 +239,13 @@ function generateGradingBreakdown(record) {
         <li>
           <div class="category">${section}</div>
           <div class="metrics">
-            <div class="metric">
-              <div class="metric-label">Weight</div>
+            <div class="metric" style="min-width: 100px;">
+              <div class="metric-value">${rawScore}/${maxScore}</div>
+            </div>
+            <div class="metric" style="min-width: 80px;">
               <div class="metric-value">${weight}%</div>
             </div>
-            <div class="metric">
-              <div class="metric-label">Weighted</div>
+            <div class="metric" style="min-width: 120px;">
               <div class="metric-value">${weightedScore.toFixed(2)}%</div>
             </div>
           </div>
@@ -248,7 +260,7 @@ function generateGradingBreakdown(record) {
     <li class="total-row">
       <div class="category">Total</div>
       <div class="metrics">
-        <div class="metric" style="padding-right:24px">
+        <div class="metric" style="min-width: 300px; text-align: right;">
           <div class="metric-value" style="font-size:14px">${totalWeightedScore.toFixed(2)}%</div>
         </div>
       </div>
