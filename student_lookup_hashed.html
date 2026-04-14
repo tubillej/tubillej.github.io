@@ -6,16 +6,17 @@
 <title>Student Lookup (hashed)</title>
 <style>
   :root{font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;}
-  body{display:flex;align-items:center;justify-content:center;height:100vh;margin:0;background:#f7fafc;color:#0f172a}
-  .card{width:min(760px,95vw);background:white;padding:28px;border-radius:12px;box-shadow:0 6px 30px rgba(2,6,23,0.08)}
+  body{display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;background:#f7fafc;color:#0f172a;padding:20px}
+  .card{width:min(900px,95vw);background:white;padding:28px;border-radius:12px;box-shadow:0 6px 30px rgba(2,6,23,0.08);max-height:90vh;overflow-y:auto}
   .search-row{display:flex;gap:8px}
   input[type="search"]{flex:1;padding:12px 14px;border-radius:8px;border:1px solid #e6e9ef;font-size:16px}
   button{padding:10px 14px;border-radius:8px;border:0;background:#0ea5a4;color:white;font-weight:600;cursor:pointer}
   table{width:100%;border-collapse:collapse;margin-top:18px}
-  th,td{text-align:left;padding:10px;border-bottom:1px solid #eef2f7}
+  th,td{text-align:left;padding:10px;border-bottom:1px solid #eef2f7;word-wrap:break-word;overflow-wrap:break-word}
   .muted{color:#64748b;font-size:13px}
   .hidden{display:none}
   .notfound{margin-top:12px;color:#ef4444;font-weight:600}
+  .section-header{background:#f0f4f8;font-weight:700;padding:12px 10px;border-bottom:2px solid #cbd5e1;border-top:16px solid transparent;font-size:13px;text-transform:uppercase;letter-spacing:0.5px}
 </style>
 </head>
 <body>
@@ -71,6 +72,29 @@ const resultArea = document.getElementById('resultArea');
 const resultBody = document.getElementById('resultBody');
 const notfound = document.getElementById('notfound');
 
+// Field name mappings and grouping
+const fieldConfig = {
+  'Student Information': {
+    fields: ['Display Name', 'Display ID', 'Total Percentage', 'DLSU GPA Equivalent', 'Section Name'],
+    mapping: {
+      'Display Name': 'Name',
+      'Display ID': 'Student ID'
+    }
+  },
+  'Insight Papers': {
+    fields: ['Module 1', 'Module 2', 'Module 3', 'Insight Papers 45% ', '% Equivalent Insight Papers']
+  },
+  'Class Participation': {
+    fields: ['Authenticity Scale', 'OCEAN Activity (class activity)', 'Anthropological Views of the Self (class activity)', 'Physical Self (discussion thread)', 'Economic Self (discussion thread)', 'Psychological Flexibility', 'Virtues and Character Strengths (VIA Survey)', 'Index Card (additional point)', 'Class Participation 15%', '% Equivalent Class Participation']
+  },
+  'Final Output': {
+    fields: ['Final Output 30%', '% Equivalent FInal Output']
+  },
+  'Peer Evaluation': {
+    fields: ['Peer Evaluation 10%', '% Equivalent Peer evaluation']
+  }
+};
+
 async function doSearch() {
   const v = q.value.trim();
   resultBody.innerHTML = '';
@@ -90,12 +114,25 @@ async function doSearch() {
     notfound.classList.remove('hidden');
     return;
   }
-  // populate table
-  for (const r of hits) {
-    for (const [key, value] of Object.entries(r)) {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td><strong>${key}</strong></td><td>${value}</td>`;
-      resultBody.appendChild(tr);
+  
+  // populate table with grouped sections
+  for (const record of hits) {
+    for (const [section, config] of Object.entries(fieldConfig)) {
+      // Add section header
+      const headerRow = document.createElement('tr');
+      headerRow.innerHTML = `<td colspan="2" class="section-header">${section}</td>`;
+      resultBody.appendChild(headerRow);
+      
+      // Add fields in this section
+      for (const fieldKey of config.fields) {
+        if (fieldKey in record) {
+          const tr = document.createElement('tr');
+          const displayName = (config.mapping && config.mapping[fieldKey]) || fieldKey;
+          const value = record[fieldKey];
+          tr.innerHTML = `<td><strong>${displayName}</strong></td><td>${value}</td>`;
+          resultBody.appendChild(tr);
+        }
+      }
     }
   }
   resultArea.classList.remove('hidden');
