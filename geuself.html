@@ -3,55 +3,82 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Student Lookup (hashed)</title>
+<title>GEUSELF Grade Consultation Term 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 <style>
-  :root{font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;}
-  body{display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;background:#f5f5f5;color:#37352f;padding:20px}
-  .card{width:min(900px,95vw);background:white;padding:20px;border-radius:4px;box-shadow:0 1px 2px rgba(0,0,0,0.04), 0 0 0 1px rgba(0,0,0,0.04);max-height:90vh;overflow-y:auto}
-  @media (min-width: 600px) {
-    .card{padding:40px}
+  :root{
+    --notion-text:#37352f;
+    --notion-text-gray:#787774;
+    --notion-bg:#ffffff;
+    --notion-bg-page:#f7f6f3;
+    --notion-bg-hover:#f1f1ef;
+    --notion-bg-section:#fafaf8;
+    --notion-border:#e9e9e7;
+    --notion-border-light:#ebebea;
+    --notion-blue:#2383e2;
+    --notion-blue-bg:#e7f3ff;
+    --notion-red:#d44c47;
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
   }
-  .search-row{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap}
-  input[type="search"]{flex:1;min-width:200px;padding:10px 12px;border-radius:4px;border:1px solid #d9d9d9;font-size:16px;background:#fff;color:#37352f;transition:border 0.2s;-webkit-appearance:none}
-  input[type="search"]:focus{outline:none;border-color:#a8a8a8}
-  button{padding:10px 16px;border-radius:4px;border:1px solid #e0e0e0;background:#f5f5f5;color:#37352f;font-weight:500;cursor:pointer;font-size:14px;transition:all 0.15s;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
-  button:hover{background:#efefef;border-color:#ccc}
-  button.secondary{border:1px solid #e0e0e0;margin-top:16px;width:100%;background:#fff;justify-content:center}
-  button.secondary:hover{background:#f9f9f9}
-  button i{font-size:16px}
-  table{width:100%;border-collapse:collapse;margin-top:24px;font-size:14px}
-  @media (max-width: 599px) {
-    table{font-size:13px}
-  }
-  th,td{text-align:left;padding:10px 8px;border-bottom:1px solid #eaeaea;word-wrap:break-word;overflow-wrap:break-word}
-  @media (min-width: 600px) {
-    th,td{padding:11px 12px}
-  }
-  td strong{font-weight:600;color:#37352f}
-  .muted{color:#9a9a9a;font-size:14px;margin-bottom:16px}
+  *{box-sizing:border-box}
+  body{display:flex;align-items:flex-start;justify-content:center;min-height:100vh;min-height:100dvh;margin:0;background:var(--notion-bg-page);color:var(--notion-text);padding:12px}
+  @media (min-width:600px){body{align-items:center;padding:20px}}
+  .card{width:100%;max-width:860px;background:var(--notion-bg);padding:16px;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,0.04),0 0 0 1px var(--notion-border);max-height:95vh;max-height:95dvh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  @media (min-width:600px){.card{padding:40px 48px;border-radius:8px;max-height:90vh}}
+  .search-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  input[type="search"]{flex:1;min-width:0;width:100%;padding:8px 10px;border-radius:4px;border:1px solid var(--notion-border);font-size:16px;background:var(--notion-bg);color:var(--notion-text);transition:border 0.15s,box-shadow 0.15s;-webkit-appearance:none}
+  input[type="search"]:focus{outline:none;border-color:var(--notion-blue);box-shadow:0 0 0 2px var(--notion-blue-bg)}
+  input[type="search"]::placeholder{color:var(--notion-text-gray);opacity:0.7}
+  button{padding:8px 14px;border-radius:4px;border:1px solid var(--notion-border);background:var(--notion-bg);color:var(--notion-text);font-weight:500;cursor:pointer;font-size:14px;transition:all 0.12s;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;-webkit-tap-highlight-color:transparent}
+  button:hover{background:var(--notion-bg-hover)}
+  button:active{transform:scale(0.98)}
+  button.secondary{border:1px solid var(--notion-border);margin-top:12px;width:100%;background:var(--notion-bg);justify-content:center;color:var(--notion-text-gray);font-size:13px}
+  button.secondary:hover{background:var(--notion-bg-hover);color:var(--notion-text)}
+  button i{font-size:15px}
+
+  /* Results */
+  #resultArea{margin-top:20px}
+  .muted{color:var(--notion-text-gray);font-size:14px;margin-bottom:12px;line-height:1.5}
   .hidden{display:none}
-  .notfound{margin-top:12px;color:#d63031;font-weight:500;font-size:14px}
-  .section-header{background:#fbfbfb;font-weight:600;padding:10px 8px;border-bottom:1px solid #eaeaea;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;color:#7a7a7a}
-  @media (min-width: 600px) {
-    .section-header{padding:12px 12px}
+  .notfound{margin-top:12px;color:var(--notion-red);font-weight:500;font-size:14px}
+
+  /* Group cards */
+  .group-card{border:1px solid var(--notion-border);border-radius:6px;margin-bottom:10px;overflow:hidden;background:var(--notion-bg)}
+  .group-header{background:var(--notion-bg-section);padding:10px 12px;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:var(--notion-text-gray);border-bottom:1px solid var(--notion-border-light);display:flex;align-items:center;gap:6px}
+  .group-header i{font-size:13px;color:var(--notion-text-gray)}
+  .group-body{padding:0}
+  .field-row{display:flex;flex-direction:column;padding:8px 12px;border-bottom:1px solid var(--notion-border-light)}
+  .field-row:last-child{border-bottom:none}
+  .field-label{font-size:11px;text-transform:uppercase;letter-spacing:0.3px;color:var(--notion-text-gray);font-weight:500;margin-bottom:2px}
+  .field-value{font-size:14px;color:var(--notion-text)}
+  .final-grade{font-weight:700;color:#1e3a8a;font-size:16px}
+  .download-wrap{padding:8px 12px 12px}
+
+  /* Desktop: side-by-side field rows */
+  @media (min-width:600px){
+    .group-card{margin-bottom:12px;border-radius:8px}
+    .group-header{padding:12px 16px}
+    .field-row{flex-direction:row;align-items:baseline;padding:10px 16px}
+    .field-label{font-size:14px;text-transform:none;letter-spacing:normal;color:var(--notion-text);font-weight:600;flex:0 0 45%;min-width:0;margin-bottom:0}
+    .field-value{font-size:14px;flex:1;min-width:0}
+    .download-wrap{padding:8px 16px 16px}
   }
-  .section-header i{margin-right:8px;color:#5a5a5a}
-  .final-grade{font-weight:700;color:#1e3a8a;font-size:15px}
 </style>
 </head>
 <body>
 <div class="card" role="main">
-  <div class="muted">Search by Student ID.</div>
+  <h1 style="font-size:20px;font-weight:700;margin:0 0 4px;color:var(--notion-text)">GEUSELF Grade Consultation</h1>
+  <div class="muted">Term 2 &middot; Search by Student ID</div>
   <div class="search-row" style="margin-top:12px">
     <input id="q" type="search" placeholder="Enter 8-digit Student ID and press Enter" aria-label="Student ID">
     <button id="btn">Search</button>
   </div>
   <div id="resultArea" class="hidden" aria-live="polite">
-    <table id="resultTable" role="table">
-      <thead><tr><th>Field</th><th>Value</th></tr></thead>
-      <tbody id="resultBody"></tbody>
-    </table>
+    <div id="resultBody"></div>
   </div>
   <div id="notfound" class="notfound hidden">No matching student ID found.</div>
   </div>
@@ -99,14 +126,9 @@ function formatValue(fieldName, value) {
   return value;
 }
 
-// Format raw scores to show as value/max (e.g., 30/60)
-function formatRawScore(fieldName, value) {
-  const match = fieldName.match(/\s*\/\s*(\d+)$/);
-  if (match) {
-    const maxScore = match[1];
-    return `${value}/${maxScore}`;
-  }
-  return value;
+// Check if field is a raw score (ends with "/ XX")
+function isRawScoreField(fieldKey) {
+  return /\/\s*\d+$/.test(fieldKey);
 }
 
 // Check if this is a final grade field
@@ -131,30 +153,38 @@ const fieldConfig = {
     icon: 'bi-person-badge'
   },
   'Insight Papers': {
-    fields: ['Module 1', 'Module 2', 'Module 3', 'Insight Paper (Raw Score) / 60', '% Equivalent Insight Papers'],
+    fields: ['Module 1', 'Module 2', 'Module 3', 'Insight Papers / 60', '% Equivalent Insight Papers'],
     mapping: {
-      'Insight Paper (Raw Score) / 60': 'Insight Paper'
+      'Insight Papers / 60': 'Insight Papers'
     },
     icon: 'bi-pencil-square'
   },
   'Class Participation': {
-    fields: ['Authenticity Scale', 'OCEAN Activity (class activity)', 'Anthropological Views of the Self (class activity)', 'Physical Self (discussion thread)', 'Economic Self (discussion thread)', 'Psychological Flexibility', 'Virtues and Character Strengths (VIA Survey)', 'Index Card (additional point)', 'Class Participation (Raw Score) / 7', '% Equivalent Class Participation'],
+    fields: ['Authenticity Scale', 'OCEAN Activity (class activity)', 'Anthropological Views of the Self (class activity)', 'Physical Self (discussion thread)', 'Economic Self (discussion thread)', 'Psychological Flexibility', 'Virtues and Character Strengths (VIA Survey)', 'Index Card (additional point)', 'Class Participation / 7', '% Equivalent Class Participation'],
     mapping: {
-      'Class Participation (Raw Score) / 7': 'Class Participation'
+      'Class Participation / 7': 'Class Participation'
     },
     icon: 'bi-chat-dots'
   },
-  'Final Output': {
-    fields: ['Final Output (Raw Score) / 28', '% Equivalent FInal Output'],
+  'Final Output Proposal': {
+    fields: ['Final Output Proposal / 16', '% Equivalent'],
     mapping: {
-      'Final Output (Raw Score) / 28': 'Final Output'
+      'Final Output Proposal / 16': 'Final Output Proposal',
+      '% Equivalent': '% Equivalent Final Output Proposal'
+    },
+    icon: 'bi-file-earmark-text'
+  },
+  'Final Output': {
+    fields: ['Final Output / 28', '% Equivalent FInal Output'],
+    mapping: {
+      'Final Output / 28': 'Final Output'
     },
     icon: 'bi-check-circle'
   },
   'Peer Evaluation': {
-    fields: ['Peer Evaluation (Raw Score) / 16', '% Equivalent Peer evaluation'],
+    fields: ['Peer Evaluation / 16', '% Equivalent Peer evaluation'],
     mapping: {
-      'Peer Evaluation (Raw Score) / 16': 'Peer Evaluation'
+      'Peer Evaluation / 16': 'Peer Evaluation'
     },
     icon: 'bi-star'
   }
@@ -194,43 +224,52 @@ async function doSearch() {
     return;
   }
   
-  // populate table with grouped sections
+  // populate grouped sections as cards
   for (const record of hits) {
     let sectionCount = 0;
     for (const [section, config] of Object.entries(fieldConfig)) {
       sectionCount++;
-      // Add section header
-      const headerRow = document.createElement('tr');
-      const iconClass = config.icon || 'bi-info-circle';
-      headerRow.innerHTML = `<td colspan="2" class="section-header"><i class="bi ${iconClass}"></i> ${section}</td>`;
-      resultBody.appendChild(headerRow);
+      const card = document.createElement('div');
+      card.className = 'group-card';
       
-      // Add fields in this section
+      const iconClass = config.icon || 'bi-info-circle';
+      const header = document.createElement('div');
+      header.className = 'group-header';
+      header.innerHTML = `<i class="bi ${iconClass}"></i> ${section}`;
+      card.appendChild(header);
+      
+      const body = document.createElement('div');
+      body.className = 'group-body';
+      
       for (const fieldKey of config.fields) {
         if (fieldKey in record) {
-          const tr = document.createElement('tr');
+          const row = document.createElement('div');
+          row.className = 'field-row';
           const displayName = (config.mapping && config.mapping[fieldKey]) || fieldKey;
           let value = formatValue(displayName, record[fieldKey]);
           
-          // Check if this is a raw score field (e.g., "Insight Paper (Raw Score) / 60")
-          if (fieldKey.includes('(Raw Score)')) {
-            value = formatRawScore(fieldKey, value);
+          // Format raw score fields as value/max
+          if (isRawScoreField(fieldKey)) {
+            const match = fieldKey.match(/\/\s*(\d+)$/);
+            if (match) value = `${value}/${match[1]}`;
           }
           
-          if (isFinalGrade(displayName)) {
-            tr.innerHTML = `<td><strong>${displayName}</strong></td><td class="final-grade">${value}</td>`;
-          } else {
-            tr.innerHTML = `<td><strong>${displayName}</strong></td><td>${value}</td>`;
-          }
-          resultBody.appendChild(tr);
+          const valClass = isFinalGrade(displayName) ? 'field-value final-grade' : 'field-value';
+          row.innerHTML = `<div class="field-label">${displayName}</div><div class="${valClass}">${value}</div>`;
+          body.appendChild(row);
         }
       }
       
+      card.appendChild(body);
+      resultBody.appendChild(card);
+      
       // Add download button after first section
       if (sectionCount === 1) {
-        const downloadRow = document.createElement('tr');
-        downloadRow.innerHTML = `<td colspan="2"><button class="secondary" onclick="downloadGradeReport()"><i class="bi bi-download"></i> Download Grade Report</button></td>`;
-        resultBody.appendChild(downloadRow);
+        const dlWrap = document.createElement('div');
+        dlWrap.className = 'download-wrap';
+        dlWrap.style.padding = '0 0 12px';
+        dlWrap.innerHTML = `<button class="secondary" onclick="downloadGradeReport()"><i class="bi bi-download"></i> Download Grade Report</button>`;
+        resultBody.appendChild(dlWrap);
       }
     }
   }
