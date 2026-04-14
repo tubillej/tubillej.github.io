@@ -6,17 +6,23 @@
 <title>Student Lookup (hashed)</title>
 <style>
   :root{font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;}
-  body{display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;background:#f7fafc;color:#0f172a;padding:20px}
-  .card{width:min(900px,95vw);background:white;padding:28px;border-radius:12px;box-shadow:0 6px 30px rgba(2,6,23,0.08);max-height:90vh;overflow-y:auto}
-  .search-row{display:flex;gap:8px}
-  input[type="search"]{flex:1;padding:12px 14px;border-radius:8px;border:1px solid #e6e9ef;font-size:16px}
-  button{padding:10px 14px;border-radius:8px;border:0;background:#0ea5a4;color:white;font-weight:600;cursor:pointer}
-  table{width:100%;border-collapse:collapse;margin-top:18px}
-  th,td{text-align:left;padding:10px;border-bottom:1px solid #eef2f7;word-wrap:break-word;overflow-wrap:break-word}
-  .muted{color:#64748b;font-size:13px}
+  body{display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;background:#fafbfc;color:#1a202c;padding:20px}
+  .card{width:min(900px,95vw);background:white;padding:32px;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,0.08);max-height:90vh;overflow-y:auto}
+  .search-row{display:flex;gap:10px;margin-bottom:20px}
+  input[type="search"]{flex:1;padding:11px 14px;border-radius:6px;border:1px solid #e2e8f0;font-size:16px;background:#f8fafc}
+  button{padding:11px 18px;border-radius:6px;border:0;background:#2563eb;color:white;font-weight:600;cursor:pointer;font-size:14px;transition:background 0.2s}
+  button:hover{background:#1d4ed8}
+  button.secondary{background:#64748b;margin-top:12px;width:100%}
+  button.secondary:hover{background:#475569}
+  table{width:100%;border-collapse:collapse;margin-top:20px}
+  th,td{text-align:left;padding:12px 10px;border-bottom:1px solid #f1f5f9;word-wrap:break-word;overflow-wrap:break-word}
+  td strong{font-weight:600;color:#334155}
+  .muted{color:#64748b;font-size:14px;margin-bottom:16px}
   .hidden{display:none}
-  .notfound{margin-top:12px;color:#ef4444;font-weight:600}
-  .section-header{background:#f0f4f8;font-weight:700;padding:12px 10px;border-bottom:2px solid #cbd5e1;border-top:16px solid transparent;font-size:13px;text-transform:uppercase;letter-spacing:0.5px}
+  .notfound{margin-top:12px;color:#dc2626;font-weight:600}
+  .section-header{background:#f8fafc;font-weight:700;padding:14px 10px;border-bottom:1px solid #e2e8f0;font-size:12px;text-transform:uppercase;letter-spacing:0.8px;color:#475569}
+  .final-grade{font-weight:700;color:#1e40af;font-size:16px}
+  .divider{height:1px;background:#e2e8f0;margin:20px 0}
 </style>
 </head>
 <body>
@@ -35,6 +41,7 @@
   <div id="notfound" class="notfound hidden">No matching student ID found.</div>
   </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script>
 let dataset = [];
 
@@ -66,6 +73,22 @@ async function sha256hex(message) {
   return buf2hex(hashBuffer);
 }
 
+// Format percentage values to 2 decimal places
+function formatValue(fieldName, value) {
+  if (fieldName.includes('% Equivalent') || fieldName.includes('Total Percentage')) {
+    const num = parseFloat(value);
+    if (!isNaN(num)) {
+      return num.toFixed(2);
+    }
+  }
+  return value;
+}
+
+// Check if this is a final grade field
+function isFinalGrade(fieldName) {
+  return fieldName === 'DLSU GPA Equivalent' || fieldName === 'Total Percentage';
+}
+
 const q = document.getElementById('q');
 const btn = document.getElementById('btn');
 const resultArea = document.getElementById('resultArea');
@@ -95,6 +118,25 @@ const fieldConfig = {
   }
 };
 
+async function generatePDFAndEmail() {
+  const element = resultArea;
+  const opt = {
+    margin: 10,
+    filename: 'grade_inquiry.pdf',
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2 },
+    jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
+  };
+  
+  // Generate and download PDF
+  await html2pdf().set(opt).from(element).save();
+  
+  // Open email client
+  const subject = encodeURIComponent('Grade Inquiry');
+  const body = encodeURIComponent('Dear Instructor,\n\nPlease find attached my grade report for inquiry. I would appreciate your review and feedback.\n\nThank you.');
+  window.open(`mailto:renzo.tubilleja@dlsu.edu.ph?subject=${subject}&body=${body}`);
+}
+
 async function doSearch() {
   const v = q.value.trim();
   resultBody.innerHTML = '';
@@ -117,7 +159,9 @@ async function doSearch() {
   
   // populate table with grouped sections
   for (const record of hits) {
+    let sectionCount = 0;
     for (const [section, config] of Object.entries(fieldConfig)) {
+      sectionCount++;
       // Add section header
       const headerRow = document.createElement('tr');
       headerRow.innerHTML = `<td colspan="2" class="section-header">${section}</td>`;
@@ -128,10 +172,22 @@ async function doSearch() {
         if (fieldKey in record) {
           const tr = document.createElement('tr');
           const displayName = (config.mapping && config.mapping[fieldKey]) || fieldKey;
-          const value = record[fieldKey];
-          tr.innerHTML = `<td><strong>${displayName}</strong></td><td>${value}</td>`;
+          let value = formatValue(displayName, record[fieldKey]);
+          
+          if (isFinalGrade(displayName)) {
+            tr.innerHTML = `<td><strong>${displayName}</strong></td><td class="final-grade">${value}</td>`;
+          } else {
+            tr.innerHTML = `<td><strong>${displayName}</strong></td><td>${value}</td>`;
+          }
           resultBody.appendChild(tr);
         }
+      }
+      
+      // Add email button after first section
+      if (sectionCount === 1) {
+        const emailRow = document.createElement('tr');
+        emailRow.innerHTML = `<td colspan="2"><button class="secondary" onclick="generatePDFAndEmail()">📧 Email Grade Inquiry</button></td>`;
+        resultBody.appendChild(emailRow);
       }
     }
   }
