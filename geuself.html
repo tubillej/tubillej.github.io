@@ -36,6 +36,7 @@
   @media (min-width: 600px) {
     .section-header{padding:12px 12px}
   }
+  .section-header i{margin-right:8px;color:#5a5a5a}
   .final-grade{font-weight:700;color:#1e3a8a;font-size:15px}
 </style>
 </head>
@@ -98,6 +99,16 @@ function formatValue(fieldName, value) {
   return value;
 }
 
+// Format raw scores to show as value/max (e.g., 30/60)
+function formatRawScore(fieldName, value) {
+  const match = fieldName.match(/\s*\/\s*(\d+)$/);
+  if (match) {
+    const maxScore = match[1];
+    return `${value}/${maxScore}`;
+  }
+  return value;
+}
+
 // Check if this is a final grade field
 function isFinalGrade(fieldName) {
   return fieldName === 'DLSU GPA Equivalent' || fieldName === 'Total Percentage';
@@ -116,19 +127,36 @@ const fieldConfig = {
     mapping: {
       'Display Name': 'Name',
       'Display ID': 'Student ID'
-    }
+    },
+    icon: 'bi-person-badge'
   },
   'Insight Papers': {
-    fields: ['Module 1', 'Module 2', 'Module 3', 'Insight Papers 45% ', '% Equivalent Insight Papers']
+    fields: ['Module 1', 'Module 2', 'Module 3', 'Insight Paper (Raw Score) / 60', '% Equivalent Insight Papers'],
+    mapping: {
+      'Insight Paper (Raw Score) / 60': 'Insight Paper'
+    },
+    icon: 'bi-pencil-square'
   },
   'Class Participation': {
-    fields: ['Authenticity Scale', 'OCEAN Activity (class activity)', 'Anthropological Views of the Self (class activity)', 'Physical Self (discussion thread)', 'Economic Self (discussion thread)', 'Psychological Flexibility', 'Virtues and Character Strengths (VIA Survey)', 'Index Card (additional point)', 'Class Participation 15%', '% Equivalent Class Participation']
+    fields: ['Authenticity Scale', 'OCEAN Activity (class activity)', 'Anthropological Views of the Self (class activity)', 'Physical Self (discussion thread)', 'Economic Self (discussion thread)', 'Psychological Flexibility', 'Virtues and Character Strengths (VIA Survey)', 'Index Card (additional point)', 'Class Participation (Raw Score) / 7', '% Equivalent Class Participation'],
+    mapping: {
+      'Class Participation (Raw Score) / 7': 'Class Participation'
+    },
+    icon: 'bi-chat-dots'
   },
   'Final Output': {
-    fields: ['Final Output 30%', '% Equivalent FInal Output']
+    fields: ['Final Output (Raw Score) / 28', '% Equivalent FInal Output'],
+    mapping: {
+      'Final Output (Raw Score) / 28': 'Final Output'
+    },
+    icon: 'bi-checkbox-circle'
   },
   'Peer Evaluation': {
-    fields: ['Peer Evaluation 10%', '% Equivalent Peer evaluation']
+    fields: ['Peer Evaluation (Raw Score) / 16', '% Equivalent Peer evaluation'],
+    mapping: {
+      'Peer Evaluation (Raw Score) / 16': 'Peer Evaluation'
+    },
+    icon: 'bi-star'
   }
 };
 
@@ -173,7 +201,8 @@ async function doSearch() {
       sectionCount++;
       // Add section header
       const headerRow = document.createElement('tr');
-      headerRow.innerHTML = `<td colspan="2" class="section-header">${section}</td>`;
+      const iconClass = config.icon || 'bi-info-circle';
+      headerRow.innerHTML = `<td colspan="2" class="section-header"><i class="bi ${iconClass}"></i> ${section}</td>`;
       resultBody.appendChild(headerRow);
       
       // Add fields in this section
@@ -182,6 +211,11 @@ async function doSearch() {
           const tr = document.createElement('tr');
           const displayName = (config.mapping && config.mapping[fieldKey]) || fieldKey;
           let value = formatValue(displayName, record[fieldKey]);
+          
+          // Check if this is a raw score field (e.g., "Insight Paper (Raw Score) / 60")
+          if (fieldKey.includes('(Raw Score)')) {
+            value = formatRawScore(fieldKey, value);
+          }
           
           if (isFinalGrade(displayName)) {
             tr.innerHTML = `<td><strong>${displayName}</strong></td><td class="final-grade">${value}</td>`;
