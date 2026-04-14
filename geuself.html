@@ -38,15 +38,18 @@
   }
   .section-header i{margin-right:8px;color:#5a5a5a}
   .final-grade{font-weight:700;color:#1e3a8a;font-size:15px}
-  .grading-breakdown{margin-top:32px;padding:16px;background:#f9f9f9;border-radius:4px;border-left:4px solid #1e3a8a}
-  .grading-breakdown h3{margin:0 0 12px 0;font-size:14px;font-weight:600;color:#37352f;text-transform:uppercase;letter-spacing:0.5px}
+  .grading-breakdown{margin-top:32px;padding:16px;background:#ffffff;border-radius:4px;border:1px solid #e5e5e5}
+  .grading-breakdown h3{margin:0 0 16px 0;font-size:12px;font-weight:600;color:#9a9a9a;text-transform:uppercase;letter-spacing:0.5px}
   .grading-breakdown ul{margin:0;padding:0;list-style:none}
-  .grading-breakdown li{font-size:13px;color:#565656;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #e0e0e0}
-  .grading-breakdown li:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
-  .grading-breakdown li strong{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;color:#37352f}
-  .grading-breakdown li .formula{font-size:12px;color:#888;font-family:monospace;margin-bottom:4px}
-  .grading-breakdown li .result{display:flex;justify-content:space-between;align-items:center;font-weight:600;color:#1e3a8a}
-  .grading-breakdown .total-row{margin-top:12px;padding-top:12px;border-top:2px solid #1e3a8a;font-weight:600;font-size:14px;display:flex;justify-content:space-between;color:#1e3a8a}
+  .grading-breakdown li{font-size:13px;color:#565656;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f0f0f0}
+  .grading-breakdown li:last-child{border-bottom:none}
+  .grading-breakdown li .category{flex:1}
+  .grading-breakdown li .metrics{display:flex;gap:24px;align-items:center;text-align:right}
+  .grading-breakdown li .metric{display:flex;flex-direction:column;align-items:flex-end}
+  .grading-breakdown li .metric-label{font-size:11px;color:#9a9a9a;margin-bottom:2px;text-transform:uppercase;letter-spacing:0.3px}
+  .grading-breakdown li .metric-value{font-size:13px;font-weight:600;color:#37352f}
+  .grading-breakdown .total-row{margin-top:12px;padding-top:12px;border-top:2px solid #e0e0e0;font-weight:600;color:#1e3a8a}
+  .grading-breakdown .total-row .metric-value{color:#1e3a8a;font-size:14px}
 </style>
 </head>
 <body>
@@ -215,20 +218,23 @@ function generateGradingBreakdown(record) {
     if (!config.weight || !config.rawScoreField || !config.percentField) continue;
     
     if (config.rawScoreField in record && config.percentField in record) {
-      const rawScore = parseFloat(record[config.rawScoreField]);
       const percentage = parseFloat(record[config.percentField]);
       const weight = config.weight;
       const weightedScore = (percentage * weight) / 100;
       
-      // Extract max score from rawScoreField (e.g., "Class Participation / 7" -> 7)
-      const maxMatch = config.rawScoreField.match(/\/\s*(\d+)$/);
-      const maxScore = maxMatch ? maxMatch[1] : '?';
-      
       breakdownHTML += `
         <li>
-          <strong>${section}${' '.repeat(Math.max(0, 25 - section.length))}<span>${weight}%</span></strong>
-          <div class="formula">${rawScore}/${maxScore} = ${percentage.toFixed(2)}% × ${weight}% </div>
-          <div class="result">Weighted Score<span>${weightedScore.toFixed(2)}%</span></div>
+          <div class="category">${section}</div>
+          <div class="metrics">
+            <div class="metric">
+              <div class="metric-label">Weight</div>
+              <div class="metric-value">${weight}%</div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">Weighted</div>
+              <div class="metric-value">${weightedScore.toFixed(2)}%</div>
+            </div>
+          </div>
         </li>
       `;
       
@@ -238,8 +244,12 @@ function generateGradingBreakdown(record) {
   
   breakdownHTML += `
     <li class="total-row">
-      <span>Total Weighted Score</span>
-      <span>${totalWeightedScore.toFixed(2)}%</span>
+      <div class="category">Total</div>
+      <div class="metrics">
+        <div class="metric" style="padding-right:24px">
+          <div class="metric-value" style="font-size:14px">${totalWeightedScore.toFixed(2)}%</div>
+        </div>
+      </div>
     </li>
   </ul>`;
   
