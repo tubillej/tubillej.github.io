@@ -23,11 +23,21 @@
   table{width:100%;border-collapse:collapse;margin-top:24px;font-size:14px}
   @media (max-width: 599px) {
     table{font-size:13px}
+    thead{display:none}
+    tbody{display:flex;flex-direction:column;gap:0}
+    tr{display:flex;flex-direction:column;border:1px solid #eaeaea;border-radius:4px;margin-bottom:12px;padding:0;background:#fff}
+    td{padding:12px;border:none;border-bottom:1px solid #f0f0f0;display:flex;justify-content:space-between;align-items:center}
+    td:last-child{border-bottom:none}
+    td:before{content:attr(data-label);font-weight:600;color:#37352f;flex:0 0 45%;word-break:break-word;margin-right:8px}
+    td strong{font-weight:600}
+    .section-header{display:flex;justify-content:center;margin-bottom:12px;padding:12px;border-radius:4px;background:#fbfbfb;border:1px solid #eaeaea;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;color:#7a7a7a;width:100%}
+    .section-header i{margin-right:6px}
+    .final-grade{font-size:16px}
   }
-  th,td{text-align:left;padding:10px 8px;border-bottom:1px solid #eaeaea;word-wrap:break-word;overflow-wrap:break-word}
   @media (min-width: 600px) {
     th,td{padding:11px 12px}
   }
+  th,td{text-align:left;padding:10px 8px;border-bottom:1px solid #eaeaea;word-wrap:break-word;overflow-wrap:break-word}
   td strong{font-weight:600;color:#37352f}
   .muted{color:#9a9a9a;font-size:14px;margin-bottom:16px}
   .hidden{display:none}
@@ -50,6 +60,19 @@
   .grading-breakdown li .metric-value{font-size:13px;font-weight:600;color:#37352f}
   .grading-breakdown .total-row{margin-top:12px;padding-top:12px;border-top:2px solid #e0e0e0;font-weight:600;color:#1e3a8a}
   .grading-breakdown .total-row .metric-value{color:#1e3a8a;font-size:14px}
+  @media (max-width: 599px) {
+    .grading-breakdown{margin-top:20px;padding:12px}
+    .grading-breakdown h3{font-size:11px;margin-bottom:12px}
+    .grading-breakdown li{flex-direction:column;align-items:flex-start;padding:10px 0;gap:6px}
+    .grading-breakdown li .category{font-weight:600;margin-bottom:4px}
+    .grading-breakdown li .metrics{width:100%;justify-content:space-between;gap:12px}
+    .grading-breakdown li .metric{flex:1;align-items:flex-end}
+    .grading-breakdown li .metric-label{font-size:10px}
+    .grading-breakdown li .metric-value{font-size:12px}
+    .grading-breakdown .total-row{flex-direction:row;align-items:center;padding:10px 0}
+    .grading-breakdown .total-row .category{font-size:14px}
+    .grading-breakdown .total-row .metric-value{font-size:13px}
+  }
 </style>
 </head>
 <body>
@@ -314,9 +337,9 @@ async function doSearch() {
           }
           
           if (isFinalGrade(displayName)) {
-            tr.innerHTML = `<td><strong>${displayName}</strong></td><td class="final-grade">${value}</td>`;
+            tr.innerHTML = `<td data-label="Field"><strong>${displayName}</strong></td><td class="final-grade" data-label="Value">${value}</td>`;
           } else {
-            tr.innerHTML = `<td><strong>${displayName}</strong></td><td>${value}</td>`;
+            tr.innerHTML = `<td data-label="Field"><strong>${displayName}</strong></td><td data-label="Value">${value}</td>`;
           }
           resultBody.appendChild(tr);
         }
