@@ -40,9 +40,13 @@
   .final-grade{font-weight:700;color:#1e3a8a;font-size:15px}
   .grading-breakdown{margin-top:32px;padding:16px;background:#f9f9f9;border-radius:4px;border-left:4px solid #1e3a8a}
   .grading-breakdown h3{margin:0 0 12px 0;font-size:14px;font-weight:600;color:#37352f;text-transform:uppercase;letter-spacing:0.5px}
-  .grading-breakdown ul{margin:0;padding-left:20px;list-style:none}
-  .grading-breakdown li{font-size:13px;color:#565656;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
-  .grading-breakdown li span:last-child{font-weight:600;color:#1e3a8a;margin-left:16px}
+  .grading-breakdown ul{margin:0;padding:0;list-style:none}
+  .grading-breakdown li{font-size:13px;color:#565656;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #e0e0e0}
+  .grading-breakdown li:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+  .grading-breakdown li strong{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;color:#37352f}
+  .grading-breakdown li .formula{font-size:12px;color:#888;font-family:monospace;margin-bottom:4px}
+  .grading-breakdown li .result{display:flex;justify-content:space-between;align-items:center;font-weight:600;color:#1e3a8a}
+  .grading-breakdown .total-row{margin-top:12px;padding-top:12px;border-top:2px solid #1e3a8a;font-weight:600;font-size:14px;display:flex;justify-content:space-between;color:#1e3a8a}
 </style>
 </head>
 <body>
@@ -57,18 +61,9 @@
       <thead><tr><th>Field</th><th>Value</th></tr></thead>
       <tbody id="resultBody"></tbody>
     </table>
+    <div id="gradingBreakdown" class="grading-breakdown"></div>
   </div>
   <div id="notfound" class="notfound hidden">No matching student ID found.</div>
-  <div class="grading-breakdown">
-    <h3>Grading Breakdown</h3>
-    <ul>
-      <li><span>Insight Papers</span><span>30%</span></li>
-      <li><span>Class Participation</span><span>20%</span></li>
-      <li><span>Final Output Proposal</span><span>10%</span></li>
-      <li><span>Final Output</span><span>30%</span></li>
-      <li><span>Peer Evaluation</span><span>10%</span></li>
-    </ul>
-  </div>
   </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -150,35 +145,50 @@ const fieldConfig = {
     mapping: {
       'Insight Paper (Raw Score) / 60': 'Insight Paper'
     },
-    icon: 'bi-pencil-square'
+    icon: 'bi-pencil-square',
+    weight: 30,
+    rawScoreField: 'Insight Paper (Raw Score) / 60',
+    percentField: '% Equivalent Insight Papers'
   },
   'Class Participation': {
     fields: ['Authenticity Scale', 'OCEAN Activity (class activity)', 'Anthropological Views of the Self (class activity)', 'Physical Self (discussion thread)', 'Economic Self (discussion thread)', 'Psychological Flexibility', 'Virtues and Character Strengths (VIA Survey)', 'Index Card (additional point)', 'Class Participation / 7', '% Equivalent Class Participation'],
     mapping: {
       'Class Participation / 7': 'Class Participation'
     },
-    icon: 'bi-chat-dots'
+    icon: 'bi-chat-dots',
+    weight: 20,
+    rawScoreField: 'Class Participation / 7',
+    percentField: '% Equivalent Class Participation'
   },
   'Final Output Proposal': {
     fields: ['Final Output Proposal / 16', '% Equivalent'],
     mapping: {
       'Final Output Proposal / 16': 'Final Output Proposal'
     },
-    icon: 'bi-lightbulb'
+    icon: 'bi-lightbulb',
+    weight: 10,
+    rawScoreField: 'Final Output Proposal / 16',
+    percentField: '% Equivalent'
   },
   'Final Output': {
     fields: ['Final Output / 28', '% Equivalent FInal Output'],
     mapping: {
       'Final Output / 28': 'Final Output'
     },
-    icon: 'bi-check-circle'
+    icon: 'bi-check-circle',
+    weight: 30,
+    rawScoreField: 'Final Output / 28',
+    percentField: '% Equivalent FInal Output'
   },
   'Peer Evaluation': {
     fields: ['Peer Evaluation / 16', '% Equivalent Peer evaluation'],
     mapping: {
       'Peer Evaluation / 16': 'Peer Evaluation'
     },
-    icon: 'bi-star'
+    icon: 'bi-star',
+    weight: 10,
+    rawScoreField: 'Peer Evaluation / 16',
+    percentField: '% Equivalent Peer evaluation'
   }
 };
 
@@ -194,6 +204,46 @@ async function downloadGradeReport() {
   
   // Generate and download PDF
   await html2pdf().set(opt).from(element).save();
+}
+
+function generateGradingBreakdown(record) {
+  let breakdownHTML = '<h3>Grading Breakdown</h3><ul>';
+  let totalWeightedScore = 0;
+  
+  for (const [section, config] of Object.entries(fieldConfig)) {
+    // Skip non-evaluated sections
+    if (!config.weight || !config.rawScoreField || !config.percentField) continue;
+    
+    if (config.rawScoreField in record && config.percentField in record) {
+      const rawScore = parseFloat(record[config.rawScoreField]);
+      const percentage = parseFloat(record[config.percentField]);
+      const weight = config.weight;
+      const weightedScore = (percentage * weight) / 100;
+      
+      // Extract max score from rawScoreField (e.g., "Class Participation / 7" -> 7)
+      const maxMatch = config.rawScoreField.match(/\/\s*(\d+)$/);
+      const maxScore = maxMatch ? maxMatch[1] : '?';
+      
+      breakdownHTML += `
+        <li>
+          <strong>${section}${' '.repeat(Math.max(0, 25 - section.length))}<span>${weight}%</span></strong>
+          <div class="formula">${rawScore}/${maxScore} = ${percentage.toFixed(2)}% × ${weight}% </div>
+          <div class="result">Weighted Score<span>${weightedScore.toFixed(2)}%</span></div>
+        </li>
+      `;
+      
+      totalWeightedScore += weightedScore;
+    }
+  }
+  
+  breakdownHTML += `
+    <li class="total-row">
+      <span>Total Weighted Score</span>
+      <span>${totalWeightedScore.toFixed(2)}%</span>
+    </li>
+  </ul>`;
+  
+  return breakdownHTML;
 }
 
 async function doSearch() {
@@ -255,6 +305,10 @@ async function doSearch() {
         resultBody.appendChild(downloadRow);
       }
     }
+    
+    // Generate and display grading breakdown
+    const gradingBreakdownDiv = document.getElementById('gradingBreakdown');
+    gradingBreakdownDiv.innerHTML = generateGradingBreakdown(record);
   }
   resultArea.classList.remove('hidden');
 }
